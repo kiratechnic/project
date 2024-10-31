@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма отправки запросов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .response {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Форма отправки запросов</h1>
+
+<div class="form-section">
+    <h2>1) GET /user/identification</h2>
+    <input type="text" id="login-id" placeholder="Логин">
+    <input type="password" id="password-id" placeholder="Пароль">
+    <button onclick="sendGetIdentification()">Отправить</button>
+    <div class="response" id="response-id"></div>
+</div>
+
+<div class="form-section">
+    <h2>2) GET /user/registration</h2>
+    <input type="text" id="login-reg" placeholder="Логин">
+    <input type="password" id="password-reg" placeholder="Пароль">
+    <button onclick="sendGetRegistration()">Отправить</button>
+    <div class="response" id="response-reg"></div>
+</div>
+
+<div class="form-section">
+    <h2>3) POST /user/authentication</h2>
+    <input type="text" id="token-auth" placeholder="Токен">
+    <button onclick="sendPostAuthentication()">Отправить</button>
+    <div class="response" id="response-auth"></div>
+</div>
+
+<div class="form-section">
+    <h2>4) /data/___/read</h2>
+    <input type="text" id="login-read" placeholder="Логин">
+    <input type="text" id="token-read" placeholder="Токен">
+    <button onclick="sendDataRead()">Отправить</button>
+    <div class="response" id="response-read"></div>
+</div>
+
+<div class="form-section">
+    <h2>5) /data/___/read с параметром path</h2>
+    <input type="text" id="login-path-read" placeholder="Логин">
+    <input type="text" id="path-read" placeholder="Путь">
+    <input type="text" id="token-path-read" placeholder="Токен">
+    <button onclick="sendDataPathRead()">Отправить</button>
+    <div class="response" id="response-path-read"></div>
+</div>
+
+<div class="form-section">
+    <h2>6) /data/___/create</h2>
+    <input type="text" id="login-create" placeholder="Логин">
+    <input type="text" id="path-create" placeholder="Путь">
+    <input type="text" id="isdirectory-create" placeholder="'true' или 'false' для isdirectory">
+    <input type="text" id="token-create" placeholder="Токен">
+    <button onclick="sendDataCreate()">Отправить</button>
+    <div class="response" id="response-create"></div>
+</div>
+
+<script>
+async function sendGetIdentification() {
+    const login = document.getElementById('login-id').value;
+    const password = document.getElementById('password-id').value;
+
+    const response = await fetch(`/user/identification?login=${login}&password=${password}`);
+    
+    const text = await response.text();
+    document.getElementById('response-id').innerText = text;
+}
+
+async function sendGetRegistration() {
+    const login = document.getElementById('login-reg').value;
+    const password = document.getElementById('password-reg').value;
+
+    const response = await fetch(`/user/registration?login=${login}&password=${password}`);
+    
+    const text = await response.text();
+    document.getElementById('response-reg').innerText = text;
+}
+
+async function sendPostAuthentication() {
+    const token = document.getElementById('token-auth').value;
+
+    const response = await fetch('/user/authentication', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: token,
+    });
+    
+    const text = await response.text();
+    document.getElementById('response-auth').innerText = text;
+}
+
+async function sendDataRead() {
+    const login = document.getElementById('login-read').value;
+    const token = document.getElementById('token-read').value;
+
+    const response = await fetch(`/data/${login}/read`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: token,
+    });
+    
+    const text = await response.text();
+    document.getElementById('response-read').innerText = text;
+}
+
+async function sendDataPathRead() {
+    const login = document.getElementById('login-path-read').value;
+    const path = document.getElementById('path-read').value;
+    const token = document.getElementById('token-path-read').value;
+
+    const response = await fetch(`/data/${login}/read?path=${path}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: token,
+    });
+    
+    const text = await response.text();
+    document.getElementById('response-path-read').innerText = text;
+}
+
+async function sendDataCreate() {
+    const login = document.getElementById('login-create').value;
+    const path = document.getElementById('path-create').value;
+    const isdirectory = document.getElementById('isdirectory-create').value;
+    const token = document.getElementById('token-create').value;
+
+    const response = await fetch(`/data/${login}/create?path=${path}&isdirectory=${isdirectory}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: token,
+    });
+    
+   const text = await response.text();
+   document.getElementById('response-create').innerText = text;
+}
+</script>
+
+</body>
+</html>
